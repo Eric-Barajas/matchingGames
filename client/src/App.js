@@ -2,8 +2,8 @@ import axios from 'axios'
 import { useEffect, useState } from 'react'
 
 const App = () => {
-  const [chosenLevel, setChosenLevel] = useState(null)
-  const [words, setWords] = useState(null)
+  const [chosenLevel, setChosenLevel] = useState('')
+  const [words, setWords] = useState([])
   const [correctAnswers, setCorrectAnswers] = useState([])
   const [clicked, setClicked] = useState([])
   const [score, setScore] = useState(0)
@@ -12,11 +12,11 @@ const App = () => {
   const getRandomWords = () => {
     const options = {
       method: 'GET',
-      url: 'http://localhost:8000/results',
+      url: 'https://twinword-word-association-quiz.p.rapidapi.com/type1/',
       params: { level: chosenLevel, area: 'sat' },
       headers: {
         'x-rapidapi-host': 'twinword-word-association-quiz.p.rapidapi.com',
-        'x-rapidapi-key': process.env.REACT_APP_RAPID_API_KEY
+        'x-rapidapi-key': '3349990788msh388664143710c09p138db8jsn1f85a7af5681'
       }
     }
 
@@ -24,8 +24,11 @@ const App = () => {
       console.log(response.data)
       setWords(response.data)
 
-    }).catch((error) => {
-      console.error(error)
+    }).catch(err => {
+      console.log(err.response.status)
+      if (err.response.status === 404) {
+        console.log("Mission Failed");
+      }
     })
   }
 
@@ -80,7 +83,7 @@ const App = () => {
 
         <div className="questions">
 
-          {words.quizlist.map((question, _questionIndex) => (
+          {words.quizlist?.map((question, _questionIndex) => (
             <div key={_questionIndex} className="question-box">
               {question.quiz.map((tip, _index) => (
                 <p key={_index}>{tip}</p>
